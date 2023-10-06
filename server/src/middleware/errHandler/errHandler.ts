@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import ApiErr, { HttpCode } from "../../utils/errs/ApiErr";
 import { TApiErrs } from "../../utils/errs";
 import { MongoError } from "mongodb";
 import isErrCausedByUser from "./isErrCausedByUser";
-import { TErrCode } from "@shared/types";
+import { TErrCode } from "@/shared/types";
 
 export type TErr = TApiErrs | Error | MongoError | SyntaxError;
 
@@ -14,12 +14,7 @@ interface TErrObject {
   duplicates?: string[];
 }
 
-export default function errHandler(
-  err: TErr,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export default function errHandler(err: TErr, _req: Request, res: Response) {
   const errObj: TErrObject = {
     message: err.message || "No error message provided",
   };

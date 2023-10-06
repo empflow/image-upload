@@ -1,10 +1,10 @@
 import express from "express";
 import errHandler from "./middleware/errHandler/errHandler";
 import notFound from "./middleware/notFound";
-import fileUploadRouter from "./routes/imgUpload";
+import uploadRouter from "./routes/upload";
 const app = express();
 
-app.use(fileUploadRouter);
+app.use("/upload", uploadRouter);
 app.use(notFound);
 app.use(errHandler);
 
