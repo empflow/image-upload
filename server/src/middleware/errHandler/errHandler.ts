@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import ApiErr, { HttpCode } from "../../utils/errs/ApiErr";
 import { TApiErrs } from "../../utils/errs";
 import { MongoError } from "mongodb";
@@ -14,7 +14,12 @@ interface TErrObject {
   duplicates?: string[];
 }
 
-export default function errHandler(err: TErr, _req: Request, res: Response) {
+export default function errHandler(
+  err: TErr,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) {
   const errObj: TErrObject = {
     message: err.message || "No error message provided",
   };
