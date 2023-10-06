@@ -1,3 +1,4 @@
+import "tsconfig-paths";
 import dotenv from "dotenv";
 dotenv.config();
 import "express-async-errors";
