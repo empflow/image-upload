@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { uploadFormSchema } from "@/shared/formSchemas";
+import { uploadFormSchemaServer } from "@/shared/ServerFormSchemas";
 import { BadRequestErr } from "@/server/src/utils/errs";
 
 export default async function uploadImgCheckTextFields(
@@ -7,7 +7,7 @@ export default async function uploadImgCheckTextFields(
   _res: Response,
   next: NextFunction
 ) {
-  const validTextFields = uploadFormSchema.safeParse(req.body).success;
+  const validTextFields = uploadFormSchemaServer.safeParse(req.body).success;
   if (!validTextFields) throw new BadRequestErr("Invalid data");
 
   next();

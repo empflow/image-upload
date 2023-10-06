@@ -1,33 +1,60 @@
-import { useState } from "preact/hooks";
-import preactLogo from "./assets/preact.svg";
-import viteLogo from "/vite.svg";
-import "./app.css";
+import { ChangeEvent, FormEvent, useState } from "react";
+import axios from "axios";
+import Input from "./components/Input";
+import parseUploadRespData from "./utils/parseUploadResp";
+import Img from "./components/Img";
 
-export function App() {
-  const [count, setCount] = useState(0);
+function App() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [img, setImg] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadedImgSrc, setUploadedImgSrc] = useState<string | null>(null);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log(firstName);
+    console.log(lastName);
+    console.log(img);
+    if (!firstName || !lastName || !img) {
+      alert("Please fill out all the fields");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("img", img);
+
+    setIsLoading(true);
+    const { data } = await axios.post("http://localhost:3000/upload", formData);
+    setIsLoading(false);
+
+    const uploadRespData = parseUploadRespData(data);
+    if (!uploadRespData) return alert("Something went wrong");
+
+    setUploadedImgSrc(uploadRespData.Location);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <main className="p-2">
+      <form
+        className="max-w-[400px] flex flex-col gap-3"
+        onSubmit={handleSubmit}
+      >
+        <Input type="text" setState={setFirstName} label="First name" />
+        <Input type="text" setState={setLastName} label="Last name" />
+        <Input type="file" setState={setImg} label="Image" />
+        <button
+          style={{ cursor: isLoading ? "wait" : undefined }}
+          className="bg-green-700 text-white p-2 rounded"
+        >
+          Send
         </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
+      </form>
+      <Img src={uploadedImgSrc} />
+    </main>
   );
 }
+
+export default App;
